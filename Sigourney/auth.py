@@ -1,13 +1,14 @@
 try:
     from flask import request, Response
     from functools import wraps
+    import os
 except ImportError as error:
     print("Some or all of the necessary packages to run the script are missing. Please consult the README for instructions on how to install them.")
     print(f"Original error: {error}")
     exit(1)
 
 def check_auth(username, password):
-    return username == 'admin' and password == 'secret'
+    return username == os.getenv("AUTH_USERNAME") and password == os.getenv("AUTH_PASSWORD")
 
 def authenticate():
     return Response(
