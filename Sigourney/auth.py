@@ -7,7 +7,13 @@ except ImportError as error:
     print(f"Original error: {error}")
     exit(1)
 
-def check_auth(username, password):
+def check_auth(username, password, super=False):
+    if username == os.getenv("SUPER_USERNAME") and password == os.getenv("SUPER_PASSWORD"):
+        return True
+
+    if (super): # They didn't match the Super AUTH credentials, so return false
+        return False
+    
     return username == os.getenv("AUTH_USERNAME") and password == os.getenv("AUTH_PASSWORD")
 
 def authenticate():
@@ -22,6 +28,17 @@ def requires_auth(f):
     def decorated(*args, **kwargs):
         auth = request.authorization
         if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        
+        return f(*args, **kwargs)
+    
+    return decorated
+
+def requires_super(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password, super=True):
             return authenticate()
         
         return f(*args, **kwargs)

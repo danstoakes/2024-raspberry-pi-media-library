@@ -45,6 +45,11 @@ def videos():
 
     return render_template("archive.html", title="Videos", videos=video_thumbnail_pairs)
 
+@app.route("/locker")
+@sigourney.requires_super
+def locker():
+    return render_template("locker.html", title="Locker")
+
 if __name__ == "__main__":
     load_dotenv()
     

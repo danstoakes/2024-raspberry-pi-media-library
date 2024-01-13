@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Video Gallery</title>
+        <title>{{ title }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     </head>
     <body>
-        <h1>Video Gallery</h1>
-        <a href="films">Films</a>
-        <a href="tv">TV</a>
-        <a href="videos">Videos</a>
+        <h1>{{ title }}</h1>
 
         <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     </body>
