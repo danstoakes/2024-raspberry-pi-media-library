@@ -3,7 +3,7 @@ import Sigourney as sigourney
 try:
     import datetime
     from dotenv import load_dotenv
-    from flask import Flask, render_template, request
+    from flask import Flask, render_template, request, url_for
     import os
 except ImportError as error:
     print("Some or all of the necessary packages to run the script are missing. Please consult the README for instructions on how to install them.")
@@ -35,7 +35,15 @@ def tv():
 @app.route("/videos")
 @sigourney.requires_auth
 def videos():
-    return render_template("archive.html", title="Videos")
+    videos_directory = "videos"
+    thumbnails_directory = "thumbnails/videos"
+    video_thumbnail_pairs = sigourney.get_videos(videos_directory, thumbnails_directory, page=1)
+
+    for pair in video_thumbnail_pairs:
+        pair["video"] = url_for("static", filename=pair["video"])
+        pair["thumbnail"] = url_for("static", filename=pair["thumbnail"])
+
+    return render_template("archive.html", title="Videos", videos=video_thumbnail_pairs)
 
 if __name__ == "__main__":
     load_dotenv()

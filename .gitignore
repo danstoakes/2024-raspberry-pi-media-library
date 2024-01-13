@@ -13,10 +13,12 @@ dist/
 Sigourney/logs/
 
 # Static assets that don't need to be version-controlled
-Sigourney/static/films/
-Sigourney/static/thumbnails/
-Sigourney/static/tv-shows/
-Sigourney/static/videos/
+static/films/*
+static/thumbnails/films/*
+static/thumbnails/tv-shows/*
+static/thumbnails/videos/*
+static/tv-shows/*
+static/videos/*
 
 # Environment variables and secrets
 .env
