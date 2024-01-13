@@ -1,0 +1,22 @@
+# General Python ignored files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Logs
+Sigourney/logs/
+
+# Static assets that don't need to be version-controlled
+Sigourney/static/films/
+Sigourney/static/thumbnails/
+Sigourney/static/tv-shows/
+Sigourney/static/videos/
+
+# Environment variables and secrets
+.env
