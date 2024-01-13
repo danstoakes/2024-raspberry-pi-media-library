@@ -100,6 +100,7 @@ nav ul li a {
     flex-direction: column;
     height: calc(100vh - 3rem);
     left: 0;
+    overflow: hidden;
     position: absolute;
     right: 0;
     transition: height 0.2s ease-in-out;
@@ -114,16 +115,40 @@ nav ul li a {
 }
 
 .nav-dropdown .search-area {
+    align-items: center;
     background: rgba(22, 22, 23, 1);
-    height: 20%;
+    box-sizing: border-box;
+    display: flex;
+    height: 15%;
+    justify-content: center;
+    opacity: 100;
+    padding: 1rem;
     width: 100%;
     transition: background 0.2s ease-in-out;
+}
+
+.nav-dropdown-hidden .search-area input[type=search] {
+    opacity: 0 !important;
+    transition: opacity 0.2s ease-in-out !important;
+}
+
+.nav-dropdown .search-area input[type=search] {
+    border-color: transparent;
+    border-radius: 10px;
+    box-shadow: none;
+    font-size: 20px;
+    max-width: 1200px;
+    opacity: 100;
+    outline: none;
+    padding: 1rem;
+    transition: opacity 0.5s ease-in-out;
+    width: 100%;
 }
 
 .nav-dropdown .blurred-area {
     background-color: transparent;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    height: 80%;
+    height: 85%;
     width: 100%;
 }
