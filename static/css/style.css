@@ -4,7 +4,12 @@ body {
     margin: 0;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Raleway", sans-serif;
+    font-weight: 400;
+}
+
+p, span, a, body {
     font-family: "Inter", sans-serif;
     font-weight: 400;
 }
@@ -24,7 +29,7 @@ nav {
 
 nav ul {
     color: rgba(255, 255, 255, 0.8);
-    max-width: 1600px;
+    max-width: 1200px;
 }
 
 nav ul .search-icon {
@@ -104,6 +109,7 @@ nav ul li a {
     position: absolute;
     right: 0;
     transition: height 0.2s ease-in-out;
+    z-index: 10;
 }
 
 .nav-dropdown-hidden {
@@ -151,4 +157,42 @@ nav ul li a {
     -webkit-backdrop-filter: blur(10px);
     height: 85%;
     width: 100%;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 1200px;
+    padding: 1rem;
+}
+
+.banner-card {
+    position: relative;
+}
+
+.banner-card:hover img {
+    filter: grayscale(1);
+}
+
+.banner-card img {
+    height: 18rem;
+    object-fit: cover;
+    transition: filter 0.5s ease-in-out;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .banner-card img {
+        height: auto;
+    }
+}
+
+.banner-card h2 {
+    bottom: 1rem;
+    color: white;
+    font-size: 3rem;
+    margin: 0;
+    position: absolute;
+    right: 1rem;
 }

@@ -5,21 +5,27 @@
     </head>
     <body>
         {% include "header.html" %}
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <h1>Video Gallery</h1>
-        <a href="films">Films</a>
-        <a href="tv">TV</a>
-        <a href="videos">Videos</a>
+        <main>
+            <h1>{{ title }}</h1>
+            <a href="films">
+                <div class="banner-card">
+                    <img src="{{ url_for('static', filename='films/category-thumbnails/blade-runner.png') }}" />
+                    <h2>Films</h2>
+                </div>
+            </a>
+            <a href="tv">
+                <div class="banner-card">
+                    <img src="{{ url_for('static', filename='tv-shows/category-thumbnails/poirot.jpg') }}" />
+                    <h2>TV</h2>
+                </div>
+            </a>
+            <a href="videos">
+                <div class="banner-card">
+                    <img src="{{ url_for('static', filename='videos/category-thumbnails/videos.jpg') }}" />
+                    <h2>Videos</h2>
+                </div>
+            </a>
+        </main>
 
         <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     </body>
