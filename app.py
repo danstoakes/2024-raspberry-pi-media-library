@@ -16,10 +16,26 @@ app = Flask(__name__)
 @sigourney.requires_auth
 def index():
     visitor_ip = request.remote_addr
+    user_agent = request.headers.get("User-Agent")
     visit_time = datetime.datetime.now()
-    visit_logger.info(f"Visitor IP: {visitor_ip}, Time: {visit_time}")
+    visit_logger.info(f"Visitor IP: {visitor_ip}, User-Agent: {user_agent}, Time: {visit_time}")
 
     return render_template("index.html", username=request.authorization.username)
+
+@app.route("/films")
+@sigourney.requires_auth
+def films():
+    return render_template("archive.html", title="Films")
+
+@app.route("/tv")
+@sigourney.requires_auth
+def tv():
+    return render_template("archive.html", title="TV Shows")
+
+@app.route("/videos")
+@sigourney.requires_auth
+def videos():
+    return render_template("archive.html", title="Videos")
 
 if __name__ == "__main__":
     load_dotenv()
