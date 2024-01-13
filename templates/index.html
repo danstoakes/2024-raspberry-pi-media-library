@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Video Gallery</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+        {%include "head.html" %}       
     </head>
     <body>
+        {% include "header.html" %}
         <h1>Video Gallery</h1>
         <a href="films">Films</a>
         <a href="tv">TV</a>

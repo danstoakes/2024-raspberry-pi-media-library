@@ -20,7 +20,7 @@ def index():
     visit_time = datetime.datetime.now()
     visit_logger.info(f"Visitor IP: {visitor_ip}, User-Agent: {user_agent}, Time: {visit_time}")
 
-    return render_template("index.html", username=request.authorization.username)
+    return render_template("index.html", title="Home")
 
 @app.route("/films")
 @sigourney.requires_auth
