@@ -1,11 +1,24 @@
 try:
-    from flask import url_for
+    from flask import current_app as app, url_for
     import json
     import os
 except ImportError as error:
     print("Some or all of the necessary packages to run the script are missing. Please consult the README for instructions on how to install them.")
     print(f"Original error: {error}")
     exit(1)
+
+def find_thumbnail(video, thumbnails_directory):
+    extensions = [".png", ".jpg", ".jpeg", ".svg"]
+    thumbnails_directory = os.path.join(app.root_path, "static", thumbnails_directory)
+    base_name = os.path.splitext(video)[0]
+
+    for ext in extensions:
+        thumbnail_file = f"{base_name}{ext}"
+        full_path = os.path.join(thumbnails_directory, thumbnail_file)
+        if os.path.isfile(full_path):
+            return thumbnail_file
+
+    return ""
 
 def get_films(directory, page=1, per_page=10):
     start = (page - 1) * per_page
@@ -38,7 +51,7 @@ def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
         if os.path.isfile(metadata_path):
             with open(metadata_path, "r") as f:
                 metadata = json.load(f)
-                thumbnail_file = os.path.splitext(show_folder)[0] + ".png"
+                thumbnail_file = find_thumbnail(show_folder, thumbnails_directory)
                 thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
                 thumbnail_url = url_for("static", filename=thumbnail_relative_path)
 
@@ -54,13 +67,13 @@ def get_videos(directory, thumbnails_directory, page=1, per_page=32):
     start = (page - 1) * per_page
     end = start + per_page
 
-    all_videos = [f for f in os.listdir(os.path.join('static', directory)) if os.path.isfile(os.path.join('static', directory, f))]
+    all_videos = [f for f in os.listdir(os.path.join("static", directory)) if os.path.isfile(os.path.join("static", directory, f))]
     videos = all_videos[start:end]
 
     video_thumbnail_pairs = []
 
     for video in videos:
-        thumbnail_file = os.path.splitext(video)[0] + ".png"
+        thumbnail_file = find_thumbnail(video, thumbnails_directory)
         thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
         thumbnail_url = url_for("static", filename=thumbnail_relative_path)
 
