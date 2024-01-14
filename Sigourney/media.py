@@ -62,15 +62,11 @@ def get_videos(directory, thumbnails_directory, page=1, per_page=32):
     for video in videos:
         thumbnail_file = os.path.splitext(video)[0] + ".png"
         thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
-
-        if os.path.isfile(os.path.join("static", thumbnail_relative_path)):
-            thumbnail = thumbnail_relative_path
-        else:
-            thumbnail = "/thumbnails/fallback.png"
+        thumbnail_url = url_for("static", filename=thumbnail_relative_path)
 
         video_thumbnail_pairs.append({
-            "video": os.path.join(directory, video),
-            "thumbnail": thumbnail
+            "video": url_for("static", filename=os.path.join(directory, video)),
+            "thumbnail": thumbnail_url
         })
 
     return video_thumbnail_pairs

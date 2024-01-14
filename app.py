@@ -59,10 +59,6 @@ def videos():
     thumbnails_directory = "thumbnails/videos"
     video_thumbnail_pairs = sigourney.get_videos(videos_directory, thumbnails_directory, page=1)
 
-    for pair in video_thumbnail_pairs:
-        pair["video"] = url_for("static", filename=pair["video"])
-        pair["thumbnail"] = url_for("static", filename=pair["thumbnail"])
-
     return render_template("archive.html", title="Videos", videos=video_thumbnail_pairs)
 
 @app.route("/locker")

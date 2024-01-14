@@ -9,7 +9,7 @@
         <div>
             {% for pair in videos %}
                 <div class="video-item">
-                    <img src="{{ pair.thumbnail }}" alt="Thumbnail">
+                    <img src="{{ pair.thumbnail }}" onerror="this.onerror=null;this.src='/static/thumbnails/fallback.png';" alt="Thumbnail">
                     <a href="{{ pair.video }}">Watch</a>
                 </div>
             {% endfor %}
