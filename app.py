@@ -3,7 +3,7 @@ import Sigourney as sigourney
 try:
     import datetime
     from dotenv import load_dotenv
-    from flask import abort, Flask, render_template, request, url_for
+    from flask import g, abort, Flask, render_template, request
     import json
     import os
 except ImportError as error:
@@ -15,13 +15,14 @@ app = Flask(__name__)
 
 @app.route("/")
 @sigourney.requires_auth
+@sigourney.set_super_flag
 def index():
     visitor_ip = request.remote_addr
     user_agent = request.headers.get("User-Agent")
     visit_time = datetime.datetime.now()
     visit_logger.info(f"Visitor IP: {visitor_ip}, User-Agent: {user_agent}, Time: {visit_time}")
 
-    return render_template("index.html", title="Home")
+    return render_template("index.html", title="Home", is_super=g.is_super, password=os.getenv("SUPER_PASSWORD"))
 
 @app.route("/films")
 @sigourney.requires_auth
@@ -64,7 +65,11 @@ def videos():
 @app.route("/locker")
 @sigourney.requires_super
 def locker():
-    return render_template("locker.html", title="Locker")
+    videos_directory = "locker"
+    thumbnails_directory = "thumbnails/locker"
+    video_thumbnail_pairs = sigourney.get_videos(videos_directory, thumbnails_directory, page=1)
+
+    return render_template("locker.html", title="Locker", videos=video_thumbnail_pairs)
 
 if __name__ == "__main__":
     load_dotenv()

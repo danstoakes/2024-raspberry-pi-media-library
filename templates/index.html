@@ -25,6 +25,17 @@
                     <h2>Videos</h2>
                 </div>
             </a>
+            {% if is_super %}
+                <div id="LockerContent" class="hidden">
+                    <a href="locker">
+                        <div class="banner-card">
+                            <img src="{{ url_for('static', filename='films/category-thumbnails/blade-runner.png') }}" />
+                            <h2>Locker</h2>
+                        </div>
+                    </a>
+                </div>
+                <script id="LockerScript" src="{{ url_for('static', filename='js/locker.js') }}" data-password="{{ password }}"></script>
+            {% endif %}
         </main>
 
         <script src="{{ url_for('static', filename='js/script.js') }}"></script>

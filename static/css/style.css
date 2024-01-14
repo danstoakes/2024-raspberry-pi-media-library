@@ -187,3 +187,7 @@ main {
     position: absolute;
     right: 1rem;
 }
+
+.hidden {
+    display: none;
+}

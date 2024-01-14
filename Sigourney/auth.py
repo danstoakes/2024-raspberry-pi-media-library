@@ -1,5 +1,5 @@
 try:
-    from flask import request, Response
+    from flask import g, request, Response
     from functools import wraps
     import os
 except ImportError as error:
@@ -38,9 +38,21 @@ def requires_super(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password, super=True):
+        if not is_user_super(auth):
             return authenticate()
         
         return f(*args, **kwargs)
     
     return decorated
+
+def is_user_super(auth):
+    return auth and check_auth(auth.username, auth.password, super=True)
+
+def set_super_flag(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        auth = request.authorization
+        g.is_super = is_user_super(auth)
+        return f(*args, **kwargs)
+    
+    return decorated_function
