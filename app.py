@@ -3,7 +3,8 @@ import Sigourney as sigourney
 try:
     import datetime
     from dotenv import load_dotenv
-    from flask import Flask, render_template, request, url_for
+    from flask import abort, Flask, render_template, request, url_for
+    import json
     import os
 except ImportError as error:
     print("Some or all of the necessary packages to run the script are missing. Please consult the README for instructions on how to install them.")
@@ -27,10 +28,48 @@ def index():
 def films():
     return render_template("archive.html", title="Films")
 
-@app.route("/tv")
+@app.route("/tv-shows/<slug>")
 @sigourney.requires_auth
-def tv():
-    return render_template("archive.html", title="TV Shows")
+def tv_show(slug):
+    tv_shows_directory = "static/tv-shows"
+    show_path = os.path.join(tv_shows_directory, slug)
+
+    metadata_path = os.path.join(show_path, "metadata.json")
+    if not os.path.isfile(metadata_path):
+        abort(404)
+
+    with open(metadata_path, "r") as f:
+        metadata = json.load(f)
+
+    return render_template("tv_landing_page.html", show=metadata)
+
+@app.route("/tv-shows")
+@sigourney.requires_auth
+def tv_shows_index():
+    tv_shows_directory = "static/tv-shows"
+    thumbnails_directory = "thumbnails/tv-shows"
+    shows = next(os.walk(tv_shows_directory))[1]
+    shows_metadata = []
+
+    for show_folder in shows:
+        if show_folder == "category-thumbnails":
+            continue
+        
+        metadata_path = os.path.join(tv_shows_directory, show_folder, "metadata.json")
+        if os.path.isfile(metadata_path):
+            with open(metadata_path, "r") as f:
+                metadata = json.load(f)
+                thumbnail_file = os.path.splitext(show_folder)[0] + ".png"
+                thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
+                thumbnail_url = url_for("static", filename=thumbnail_relative_path)
+
+                shows_metadata.append({
+                    "title": metadata.get("title"),
+                    "thumbnail": thumbnail_url,
+                    "slug": f"/tv-shows/{show_folder}"
+                })
+
+    return render_template("tv.html", title="TV", shows=shows_metadata)
 
 @app.route("/videos")
 @sigourney.requires_auth

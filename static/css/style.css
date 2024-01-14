@@ -75,16 +75,7 @@ nav ul li svg {
 
 @media (max-width: 768px) {
     nav ul {
-        display: none;
-        flex-direction: column;
-    }
-
-    nav ul.active {
-        display: flex;
-    }
-
-    .hamburger-menu {
-        display: flex;
+        flex-direction: row;
     }
 }
 

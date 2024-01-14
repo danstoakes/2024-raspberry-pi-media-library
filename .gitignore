@@ -12,49 +12,26 @@ dist/
 # Logs
 Sigourney/logs/
 
-# Static assets that don't need to be version-controlled
-static/films/*.jpg
-static/films/*.jpeg
-static/films/*.png
-static/films/*.gif
-static/films/*.bmp
-static/films/*.webp
-static/films/*.svg
-static/films/*.mp4
-static/films/*.avi
-static/films/*.mov
-static/films/*.wmv
-static/films/*.flv
-static/films/category-thumbnails/*
-static/tv-shows/*.jpg
-static/tv-shows/*.jpeg
-static/tv-shows/*.png
-static/tv-shows/*.gif
-static/tv-shows/*.bmp
-static/tv-shows/*.webp
-static/tv-shows/*.svg
-static/tv-shows/*.mp4
-static/tv-shows/*.avi
-static/tv-shows/*.mov
-static/tv-shows/*.wmv
-static/tv-shows/*.flv
-static/tv-shows/category-thumbnails/*
-static/videos/*.jpg
-static/videos/*.jpeg
-static/videos/*.png
-static/videos/*.gif
-static/videos/*.bmp
-static/videos/*.webp
-static/videos/*.svg
-static/videos/*.mp4
-static/videos/*.avi
-static/videos/*.mov
-static/videos/*.wmv
-static/videos/*.flv
-static/videos/category-thumbnails/*
-static/thumbnails/films/*
-static/thumbnails/tv-shows/*
-static/thumbnails/videos/*
+# Ignore everything in the static folder
+static/*
+
+# But not these directories
+!static/css/
+!static/js/
+
+# Ignore all files in these directories
+static/css/*.*
+static/js/*.*
+
+# Don't ignore .css and .js source files
+!static/css/*.css
+!static/js/*.js
+
+# Ignore all thumbnails
+static/thumbnails/*
+
+# Don't ignore the fallback image
+!static/thumbnails/fallback.png
 
 # Environment variables and secrets
 .env
