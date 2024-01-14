@@ -3,7 +3,7 @@ import Sigourney as sigourney
 try:
     import datetime
     from dotenv import load_dotenv
-    from flask import g, abort, Flask, render_template, request
+    from flask import g, abort, Flask, send_from_directory, render_template, request
     import json
     import os
 except ImportError as error:
@@ -70,6 +70,31 @@ def locker():
     video_thumbnail_pairs = sigourney.get_videos(videos_directory, thumbnails_directory, page=1)
 
     return render_template("locker.html", title="Locker", videos=video_thumbnail_pairs)
+
+@app.route('/static/locker/<path:filename>')
+@sigourney.requires_super
+def locker_static(filename):
+    return send_from_directory(os.path.join(app.root_path, 'static', 'locker'), filename)
+
+@app.route('/static/films/<path:filename>')
+@sigourney.requires_auth
+def protected_films(filename):
+    return send_from_directory(os.path.join(app.root_path, 'static', 'films'), filename)
+
+@app.route('/static/tv-shows/<path:filename>')
+@sigourney.requires_auth
+def protected_tv(filename):
+    return send_from_directory(os.path.join(app.root_path, 'static', 'tv-shows'), filename)
+
+@app.route('/static/videos/<path:filename>')
+@sigourney.requires_auth
+def protected_videos(filename):
+    return send_from_directory(os.path.join(app.root_path, 'static', 'videos'), filename)
+
+@app.route('/static/thumbnails/<path:filename>')
+@sigourney.requires_auth
+def protected_thumbnails(filename):
+    return send_from_directory(os.path.join(app.root_path, 'static', 'thumbnails'), filename)
 
 if __name__ == "__main__":
     load_dotenv()
