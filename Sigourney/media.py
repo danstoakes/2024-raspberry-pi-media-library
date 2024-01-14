@@ -17,14 +17,23 @@ def get_films(directory, page=1, per_page=10):
 
     return films
 
+from flask import url_for
+import os
+import json
+
 def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
     shows = next(os.walk(directory))[1]
     shows_metadata = []
 
-    for show_folder in shows:
-        if show_folder == "category-thumbnails":
-            continue
-        
+    shows = [show for show in shows if show != "category-thumbnails"]
+
+    shows.sort()
+
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated_shows = shows[start:end]
+
+    for show_folder in paginated_shows:
         metadata_path = os.path.join(directory, show_folder, "metadata.json")
         if os.path.isfile(metadata_path):
             with open(metadata_path, "r") as f:
