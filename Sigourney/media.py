@@ -1,4 +1,6 @@
 try:
+    from flask import url_for
+    import json
     import os
 except ImportError as error:
     print("Some or all of the necessary packages to run the script are missing. Please consult the README for instructions on how to install them.")
@@ -14,6 +16,30 @@ def get_films(directory, page=1, per_page=10):
     films = all_films[start:end]
 
     return films
+
+def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
+    shows = next(os.walk(directory))[1]
+    shows_metadata = []
+
+    for show_folder in shows:
+        if show_folder == "category-thumbnails":
+            continue
+        
+        metadata_path = os.path.join(directory, show_folder, "metadata.json")
+        if os.path.isfile(metadata_path):
+            with open(metadata_path, "r") as f:
+                metadata = json.load(f)
+                thumbnail_file = os.path.splitext(show_folder)[0] + ".png"
+                thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
+                thumbnail_url = url_for("static", filename=thumbnail_relative_path)
+
+                shows_metadata.append({
+                    "title": metadata.get("title"),
+                    "thumbnail": thumbnail_url,
+                    "slug": f"/tv-shows/{show_folder}"
+                })
+
+    return shows_metadata
 
 def get_videos(directory, thumbnails_directory, page=1, per_page=32):
     start = (page - 1) * per_page
