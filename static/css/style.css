@@ -191,3 +191,40 @@ main {
 .hidden {
     display: none;
 }
+
+.archive-grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 768px) {
+    .archive-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.archive-item {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+}
+
+.archive-item a {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.archive-item svg {
+    height: 100%;
+    position: absolute;
+    width: 3rem;
+}
+
+.archive-item-img {
+    height: 10rem;
+    object-fit: cover;
+    width: 100%;
+}

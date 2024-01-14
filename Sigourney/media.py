@@ -63,6 +63,10 @@ def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
 
     return shows_metadata
 
+def is_image_file(filename):
+    image_extensions = {'png', 'gif', 'jpg', 'jpeg'}
+    return filename.split('.')[-1].lower() in image_extensions
+
 def get_videos(directory, thumbnails_directory, page=1, per_page=32):
     start = (page - 1) * per_page
     end = start + per_page
@@ -73,13 +77,18 @@ def get_videos(directory, thumbnails_directory, page=1, per_page=32):
     video_thumbnail_pairs = []
 
     for video in videos:
-        thumbnail_file = find_thumbnail(video, thumbnails_directory)
-        thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
-        thumbnail_url = url_for("static", filename=thumbnail_relative_path)
+        is_image = is_image_file(video)
+        if is_image:
+            thumbnail_url = url_for("static", filename=os.path.join(directory, video))
+        else:
+            thumbnail_file = find_thumbnail(video, thumbnails_directory)
+            thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
+            thumbnail_url = url_for("static", filename=thumbnail_relative_path)
 
         video_thumbnail_pairs.append({
             "video": url_for("static", filename=os.path.join(directory, video)),
-            "thumbnail": thumbnail_url
+            "thumbnail": thumbnail_url,
+            "is_image": is_image
         })
 
     return video_thumbnail_pairs

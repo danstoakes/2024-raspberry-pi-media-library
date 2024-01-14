@@ -65,11 +65,11 @@ def videos():
 @app.route("/locker")
 @sigourney.requires_super
 def locker():
-    videos_directory = "locker"
+    media_directory = "locker"
     thumbnails_directory = "thumbnails/locker"
-    video_thumbnail_pairs = sigourney.get_videos(videos_directory, thumbnails_directory, page=1)
+    media_thumbnail_pairs = sigourney.get_videos(media_directory, thumbnails_directory, page=1, per_page=200)
 
-    return render_template("locker.html", title="Locker", videos=video_thumbnail_pairs)
+    return render_template("locker.html", title="Locker", media=media_thumbnail_pairs)
 
 @app.route('/static/locker/<path:filename>')
 @sigourney.requires_super
