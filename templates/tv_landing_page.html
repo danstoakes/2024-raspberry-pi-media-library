@@ -1,1 +1,25 @@
-<p>HI!</p>
+<!DOCTYPE html>
+<html>
+    <head>
+        {%include "head.html" %}       
+    </head>
+    <body>
+        {% include "header.html" %}
+        <main>
+            <h1>{{ title }}</h1>
+            <ul class="archive-grid">
+                {% for season in series %}
+                    <li class="archive-item">
+                        <a href="{{ season.slug }}">
+                            <div class="banner-card">
+                                <img src="{{ season.thumbnail }}" onerror="this.onerror=null;this.src='/static/thumbnails/fallback.png';">
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </main>
+
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </body>
+</html>

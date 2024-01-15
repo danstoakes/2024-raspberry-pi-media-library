@@ -38,17 +38,11 @@ def films():
 @app.route("/tv-shows/<slug>")
 @sigourney.requires_auth
 def tv_show(slug):
-    tv_shows_directory = "static/tv-shows"
-    show_path = os.path.join(tv_shows_directory, slug)
+    tv_show_directory = f"static/tv-shows/{slug}"
+    thumbnails_directory = f"tv-shows/{slug}/series-thumbnails"
+    series = sigourney.get_series(tv_show_directory, thumbnails_directory, page=1)
 
-    metadata_path = os.path.join(show_path, "metadata.json")
-    if not os.path.isfile(metadata_path):
-        abort(404)
-
-    with open(metadata_path, "r") as f:
-        metadata = json.load(f)
-
-    return render_template("tv_landing_page.html", show=metadata)
+    return render_template("tv_landing_page.html", series=series)
 
 @app.route("/tv-shows")
 @sigourney.requires_auth

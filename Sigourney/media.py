@@ -49,6 +49,32 @@ def get_films(directory, thumbnails_directory, page=1, per_page=10):
 
     return shows_metadata
 
+def get_series(directory, thumbnails_directory, page=1, per_page=32):
+    series_count = 0
+    metadata_path = os.path.join(directory, "metadata.json")
+
+    if os.path.isfile(metadata_path):
+        with open(metadata_path, "r") as f:
+            metadata = json.load(f)
+            series_count = metadata.get("series")
+
+    series_metadata = []
+
+    for series in range(series_count):
+        series_folder = os.path.join(directory, str(series + 1))
+
+        thumbnail_file = find_thumbnail(str(series + 1), thumbnails_directory)
+        thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
+        thumbnail_url = url_for("static", filename=thumbnail_relative_path)
+
+        series_metadata.append({
+            "title": f"Series {series + 1}",
+            "thumbnail": thumbnail_url,
+            "slug": series_folder
+        })
+    
+    return series_metadata
+
 def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
     shows = next(os.walk(directory))[1]
     shows_metadata = []
