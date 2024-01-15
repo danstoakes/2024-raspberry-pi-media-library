@@ -5,15 +5,26 @@
     </head>
     <body>
         {% include "header.html" %}
-        <h1>{{ title }}</h1>
-        <div>
-            {% for pair in videos %}
-                <div class="video-item">
-                    <img src="{{ pair.thumbnail }}" onerror="this.onerror=null;this.src='/static/thumbnails/fallback.png';" alt="Thumbnail">
-                    <a href="{{ pair.video }}">Watch</a>
-                </div>
-            {% endfor %}
-        </div>
+        <main>
+            <h1>{{ title }}</h1>
+            <div class="archive-grid">
+                {% for pair in videos %}
+                    <div class="archive-item">
+                        <a href="{{ pair.video }}">
+                            <img class="archive-item-img" src="{{ pair.thumbnail }}"
+                                onerror="this.onerror=null;this.src='/static/thumbnails/fallback.png';">
+                            {% if not pair.is_image %}
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                                    <path fill-rule="evenodd"
+                                        d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </main>
 
         <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     </body>

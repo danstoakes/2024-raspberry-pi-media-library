@@ -7,13 +7,12 @@
         {% include "header.html" %}
         <main>
             <h1>{{ title }}</h1>
-            <ul>
+            <ul class="archive-grid">
                 {% for show in shows %}
-                    <li>
+                    <li class="archive-item">
                         <a href="{{ show.slug }}">
                             <div class="banner-card">
                                 <img src="{{ show.thumbnail }}" onerror="this.onerror=null;this.src='/static/thumbnails/fallback.png';">
-                                <h2>{{ show.title }}</h2>
                             </div>
                         </a>
                     </li>
