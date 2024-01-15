@@ -20,19 +20,34 @@ def find_thumbnail(video, thumbnails_directory):
 
     return ""
 
-def get_films(directory, page=1, per_page=10):
+def get_films(directory, thumbnails_directory, page=1, per_page=10):
+    shows = next(os.walk(directory))[1]
+    shows_metadata = []
+
+    shows = [show for show in shows if show != "category-thumbnails"]
+
+    shows.sort()
+
     start = (page - 1) * per_page
     end = start + per_page
+    paginated_shows = shows[start:end]
 
-    all_films = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+    for show_folder in paginated_shows:
+        metadata_path = os.path.join(directory, show_folder, "metadata.json")
+        if os.path.isfile(metadata_path):
+            with open(metadata_path, "r") as f:
+                metadata = json.load(f)
+                thumbnail_file = find_thumbnail(show_folder, thumbnails_directory)
+                thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
+                thumbnail_url = url_for("static", filename=thumbnail_relative_path)
 
-    films = all_films[start:end]
+                shows_metadata.append({
+                    "title": metadata.get("title"),
+                    "thumbnail": thumbnail_url,
+                    "video": os.path.join(directory, metadata.get("src"))
+                })
 
-    return films
-
-from flask import url_for
-import os
-import json
+    return shows_metadata
 
 def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
     shows = next(os.walk(directory))[1]

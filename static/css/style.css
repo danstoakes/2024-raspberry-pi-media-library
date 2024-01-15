@@ -226,7 +226,7 @@ main {
 }
 
 .archive-item-img {
-    height: 10rem;
+    aspect-ratio: 1/1;
     object-fit: cover;
     width: 100%;
 }
