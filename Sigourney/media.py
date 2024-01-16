@@ -20,6 +20,31 @@ def find_thumbnail(video, thumbnails_directory):
 
     return ""
 
+def get_episodes(directory, thumbnails_directory, page=1, per_page=16):
+    episodes = next(os.walk(directory))[2]
+    episodes_metadata = [{
+        "title": f"Series {directory.split('/')[-1]}",
+        "breakdown": []
+    }]
+
+    episodes.sort()
+
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated_episodes = episodes[start:end]
+
+    for episode in paginated_episodes:
+        thumbnail_file = find_thumbnail(episode, thumbnails_directory)
+        thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
+        thumbnail_url = url_for("static", filename=thumbnail_relative_path)
+
+        episodes_metadata[0]["breakdown"].append({
+            "thumbnail": thumbnail_url,
+            "video": f"/{os.path.join(directory, episode)}"
+        })
+
+    return episodes_metadata
+
 def get_films(directory, thumbnails_directory, page=1, per_page=10):
     shows = next(os.walk(directory))[1]
     shows_metadata = []
@@ -58,7 +83,10 @@ def get_series(directory, thumbnails_directory, page=1, per_page=32):
             metadata = json.load(f)
             series_count = metadata.get("series")
 
-    series_metadata = []
+    series_metadata = [{
+        "title": metadata.get("title"),
+        "breakdown": []
+    }]
 
     for series in range(series_count):
         series_folder = os.path.join(directory, str(series + 1))
@@ -67,10 +95,10 @@ def get_series(directory, thumbnails_directory, page=1, per_page=32):
         thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
         thumbnail_url = url_for("static", filename=thumbnail_relative_path)
 
-        series_metadata.append({
+        series_metadata[0]["breakdown"].append({
             "title": f"Series {series + 1}",
             "thumbnail": thumbnail_url,
-            "slug": series_folder
+            "slug": f"{series_folder.split('static')[1]}"
         })
     
     return series_metadata

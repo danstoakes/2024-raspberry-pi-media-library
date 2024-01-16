@@ -31,8 +31,6 @@ def films():
     thumbnails_directory = "thumbnails/films"
     films_metadata = sigourney.get_films(directory, thumbnails_directory, page=1)
 
-    print(films_metadata)
-
     return render_template("archive.html", title="Films", videos=films_metadata)
 
 @app.route("/tv-shows/<slug>")
@@ -42,7 +40,16 @@ def tv_show(slug):
     thumbnails_directory = f"tv-shows/{slug}/series-thumbnails"
     series = sigourney.get_series(tv_show_directory, thumbnails_directory, page=1)
 
-    return render_template("tv_landing_page.html", series=series)
+    return render_template("tv_landing_page.html", series=series[0]["breakdown"], title=series[0]["title"])
+
+@app.route("/tv-shows/<slug>/<sub_slug>")
+@sigourney.requires_auth
+def tv_show_detail(slug, sub_slug):
+    tv_show_directory = f"static/tv-shows/{slug}/{sub_slug}"
+    thumbnails_directory = f"thumbnails/tv-shows/{slug}"
+    episodes = sigourney.get_episodes(tv_show_directory, thumbnails_directory, page=1)
+
+    return render_template("tv_details_page.html", episodes=episodes[0]["breakdown"], title=episodes[0]["title"])
 
 @app.route("/tv-shows")
 @sigourney.requires_auth
