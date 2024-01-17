@@ -74,7 +74,7 @@ def videos():
 def locker():
     media_directory = "locker"
     thumbnails_directory = "thumbnails/locker"
-    media_thumbnail_pairs = sigourney.get_videos(media_directory, thumbnails_directory, page=1, per_page=200)
+    media_thumbnail_pairs = sigourney.get_videos(media_directory, thumbnails_directory, page=1, per_page=400)
 
     return render_template("locker.html", title="Locker", media=media_thumbnail_pairs)
 
