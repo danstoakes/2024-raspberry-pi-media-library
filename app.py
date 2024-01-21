@@ -3,8 +3,7 @@ import Sigourney as sigourney
 try:
     import datetime
     from dotenv import load_dotenv
-    from flask import g, abort, Flask, send_from_directory, render_template, request
-    import json
+    from flask import g, Flask, send_from_directory, render_template, request
     import os
 except ImportError as error:
     print("Some or all of the necessary packages to run the script are missing. Please consult the README for instructions on how to install them.")
