@@ -24,6 +24,7 @@ def trigger_notification ():
     time.sleep(1)
     try:
         requests.get(f'http://{request.host}/notify')
+        print(f'http://{request.host}/notify')
     except Exception as e:
         print(f"Error making notify request: {e}")
 
