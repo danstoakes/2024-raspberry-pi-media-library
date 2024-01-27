@@ -16,9 +16,9 @@ except ImportError as error:
 app = Flask(__name__)
 
 def get_local_ip():
-    hostname = socket.gethostname()
+    hostname = socket.getfqdn()
 
-    return socket.gethostbyname(hostname)
+    return socket.gethostbyname_ex(hostname)[2][1]
 
 @app.route("/")
 @sigourney.requires_auth
