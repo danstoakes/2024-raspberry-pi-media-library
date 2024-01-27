@@ -83,17 +83,14 @@ def locker_static(filename):
     return send_from_directory(os.path.join(app.root_path, 'static', 'locker'), filename)
 
 @app.route('/static/films/<path:filename>')
-@sigourney.requires_auth
 def protected_films(filename):
     return send_from_directory(os.path.join(app.root_path, 'static', 'films'), filename)
 
 @app.route('/static/tv-shows/<path:filename>')
-@sigourney.requires_auth
 def protected_tv(filename):
     return send_from_directory(os.path.join(app.root_path, 'static', 'tv-shows'), filename)
 
 @app.route('/static/videos/<path:filename>')
-@sigourney.requires_auth
 def protected_videos(filename):
     return send_from_directory(os.path.join(app.root_path, 'static', 'videos'), filename)
 
