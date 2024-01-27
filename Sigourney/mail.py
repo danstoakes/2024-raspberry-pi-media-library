@@ -11,7 +11,7 @@ except ImportError as error:
 def send_notification(host):
     sender_email = f'Sigourney <{os.getenv("SENDER_MAIL_ADDRESS")}>'
     receiver_email = os.getenv("RECIEVER_MAIL_ADDRESS")
-    password = os.getenv("SENDER_MAIL_APP_PASSWORD")i
+    password = os.getenv("SENDER_MAIL_APP_PASSWORD")
 
     body = f"The Media Server is live at {host}"
 
