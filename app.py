@@ -16,15 +16,9 @@ except ImportError as error:
 app = Flask(__name__)
 
 def get_local_ip():
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.connect(("8.8.8.8", 80))
-            local_ip = s.getsockname()[0]
+    hostname = socket.gethostname()
 
-            return local_ip
-    except Exception as e:
-        print(f"Error obtaining local IP address: {e}")
-        return None
+    return socket.gethostbyname(hostname)
 
 @app.route("/")
 @sigourney.requires_auth
@@ -124,7 +118,6 @@ if __name__ == "__main__":
 
     threading.Thread(target=lambda: app.run(host=host_ip, port=host_port)).start()
 
-    time.sleep(1)
     local_ip = get_local_ip()
     if local_ip != None:
         sigourney.send_notification(f"{local_ip}:{host_port}")
