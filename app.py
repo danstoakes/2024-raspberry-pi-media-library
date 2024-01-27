@@ -108,5 +108,5 @@ if __name__ == "__main__":
     host_ip = os.getenv("APP_IP")
     host_port = os.getenv("APP_PORT")
 
-    app.run(host=host_ip, port=host_port)
     sigourney.send_notification()
+    app.run(host=host_ip, port=host_port)
