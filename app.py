@@ -11,15 +11,22 @@ except ImportError as error:
     exit(1)
 
 app = Flask(__name__)
+app_initialized = False
 
 @app.route("/")
 @sigourney.requires_auth
 @sigourney.set_super_flag
 def index():
+    global app_initialized
+
     visitor_ip = request.remote_addr
     user_agent = request.headers.get("User-Agent")
     visit_time = datetime.datetime.now()
     visit_logger.info(f"Visitor IP: {visitor_ip}, User-Agent: {user_agent}, Time: {visit_time}")
+
+    if not app_initialized:
+        sigourney.send_notification(request.host)
+        app_initialized = True
 
     return render_template("index.html", title="Home", is_super=g.is_super, password=os.getenv("SUPER_PASSWORD"))
 
@@ -108,5 +115,4 @@ if __name__ == "__main__":
     host_ip = os.getenv("APP_IP")
     host_port = os.getenv("APP_PORT")
 
-    sigourney.send_notification(request.host)
     app.run(host=host_ip, port=host_port)
