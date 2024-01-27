@@ -131,4 +131,4 @@ if __name__ == "__main__":
 
     threading.Thread(target=lambda: app.run(host=host_ip, port=host_port)).start()
 
-    notify()
+    trigger_notification()
