@@ -5,7 +5,7 @@ try:
     from dotenv import load_dotenv
     from flask import g, Flask, send_from_directory, render_template, request
     import os
-    import requests
+    import socket
     import threading
     import time
 except ImportError as error:
@@ -14,34 +14,26 @@ except ImportError as error:
     exit(1)
 
 app = Flask(__name__)
-app_initialized = False
 
-@app.route("/notify")
-def notify():
-    sigourney.send_notification(request.host)
-
-def trigger_notification ():
-    time.sleep(1)
+def get_local_ip():
     try:
-        requests.get(f'http://{request.host}/notify')
-        print(f'http://{request.host}/notify')
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(("8.8.8.8", 80))
+            local_ip = s.getsockname()[0]
+
+            return local_ip
     except Exception as e:
-        print(f"Error making notify request: {e}")
+        print(f"Error obtaining local IP address: {e}")
+        return None
 
 @app.route("/")
 @sigourney.requires_auth
 @sigourney.set_super_flag
 def index():
-    global app_initialized
-
     visitor_ip = request.remote_addr
     user_agent = request.headers.get("User-Agent")
     visit_time = datetime.datetime.now()
     visit_logger.info(f"Visitor IP: {visitor_ip}, User-Agent: {user_agent}, Time: {visit_time}")
-
-    if not app_initialized:
-        sigourney.send_notification(request.host)
-        app_initialized = True
 
     return render_template("index.html", title="Home", is_super=g.is_super, password=os.getenv("SUPER_PASSWORD"))
 
@@ -132,4 +124,7 @@ if __name__ == "__main__":
 
     threading.Thread(target=lambda: app.run(host=host_ip, port=host_port)).start()
 
-    trigger_notification()
+    time.sleep(1)
+    local_ip = get_local_ip()
+    if local_ip != None:
+        sigourney.send_notification(f"{local_ip}:{host_port}")
