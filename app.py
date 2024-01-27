@@ -5,6 +5,9 @@ try:
     from dotenv import load_dotenv
     from flask import g, Flask, send_from_directory, render_template, request
     import os
+    import requests
+    import threading
+    import time
 except ImportError as error:
     print("Some or all of the necessary packages to run the script are missing. Please consult the README for instructions on how to install them.")
     print(f"Original error: {error}")
@@ -12,6 +15,17 @@ except ImportError as error:
 
 app = Flask(__name__)
 app_initialized = False
+
+@app.route("/notify")
+def notify():
+    sigourney.send_notification(request.host)
+
+def trigger_notification ():
+    time.sleep(1)
+    try:
+        requests.get(f'http://{request.host}/notify')
+    except Exception as e:
+        print(f"Error making notify request: {e}")
 
 @app.route("/")
 @sigourney.requires_auth
@@ -115,4 +129,6 @@ if __name__ == "__main__":
     host_ip = os.getenv("APP_IP")
     host_port = os.getenv("APP_PORT")
 
-    app.run(host=host_ip, port=host_port)
+    threading.Thread(target=lambda: app.run(host=host_ip, port=host_port)).start()
+
+    notify()
