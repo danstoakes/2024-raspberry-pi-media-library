@@ -8,12 +8,12 @@ except ImportError as error:
     print(f"Original error: {error}")
     exit(1)
 
-def send_notification(host):
+def send_notification():
     sender_email = os.getenv("SENDER_MAIL_ADDRESS")
     receiver_email = os.getenv("RECIEVER_MAIL_ADDRESS")
     password = os.getenv("SENDER_MAIL_APP_PASSWORD")
 
-    body = f"The Media Server is live at {host}"
+    body = f"The Media Server is now running."
 
     message = MIMEMultipart()
     message["From"] = sender_email
