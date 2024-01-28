@@ -54,8 +54,8 @@ def tv_show_detail(slug, sub_slug):
 @app.route("/tv-shows")
 @sigourney.requires_auth
 def tv_shows():
-    tv_shows_directory = "static/tv-shows"
-    thumbnails_directory = "thumbnails/tv-shows"
+    tv_shows_directory = os.path.join(current_app.root_path, "static", "tv-shows")
+    thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "tv-shows")
     shows_metadata = sigourney.get_tv_shows(tv_shows_directory, thumbnails_directory, page=1)
 
     return render_template("tv.html", title="TV", shows=shows_metadata)
