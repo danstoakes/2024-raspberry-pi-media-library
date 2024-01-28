@@ -104,8 +104,8 @@ def get_series(directory, thumbnails_directory, page=1, per_page=32):
     return series_metadata
 
 def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
-    absolute_directory = os.path.join(app.root_path, "static", directory)
-    absolute_thumbnails_directory = os.path.join(app.root_path, "static", thumbnails_directory)
+    absolute_directory = directory
+    absolute_thumbnails_directory = thumbnails_directory
 
     shows = next(os.walk(absolute_directory))[1]
     shows_metadata = []
