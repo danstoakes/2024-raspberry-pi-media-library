@@ -149,14 +149,14 @@ def get_videos(directory, thumbnails_directory, page=1, per_page=32):
         video_path = os.path.join(directory, video)
         is_image = is_image_file(video_path)
         if is_image:
-            thumbnail_url = url_for("static", filename=os.path.relpath(video_path, start=app.root_path))
+            thumbnail_url = os.path.relpath(video_path, start=app.root_path)
         else:
             thumbnail_file = find_thumbnail(video, thumbnails_directory)
             thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
-            thumbnail_url = url_for("static", filename=os.path.relpath(thumbnail_relative_path, start=app.root_path))
+            thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
 
         video_thumbnail_pairs.append({
-            "video": url_for("static", filename=os.path.relpath(video_path, start=app.root_path)),
+            "video": os.path.relpath(video_path, start=app.root_path),
             "thumbnail": thumbnail_url,
             "is_image": is_image
         })
