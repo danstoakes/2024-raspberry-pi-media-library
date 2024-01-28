@@ -3,7 +3,7 @@ import Sigourney as sigourney
 try:
     import datetime
     from dotenv import load_dotenv
-    from flask import g, Flask, send_from_directory, render_template, request
+    from flask import current_app, Flask, g, send_from_directory, render_template, request
     import os
     import threading
 except ImportError as error:
@@ -63,8 +63,8 @@ def tv_shows():
 @app.route("/videos")
 @sigourney.requires_auth
 def videos():
-    videos_directory = "videos"
-    thumbnails_directory = "thumbnails/videos"
+    videos_directory = os.path.join(current_app.root_path, "static", "videos")
+    thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "videos")
     video_thumbnail_pairs = sigourney.get_videos(videos_directory, thumbnails_directory, page=1)
 
     return render_template("archive.html", title="Videos", videos=video_thumbnail_pairs)
