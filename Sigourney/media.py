@@ -104,10 +104,7 @@ def get_series(directory, thumbnails_directory, page=1, per_page=32):
     return series_metadata
 
 def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
-    absolute_directory = directory
-    absolute_thumbnails_directory = thumbnails_directory
-
-    shows = next(os.walk(absolute_directory))[1]
+    shows = next(os.walk(directory))[1]
     shows_metadata = []
 
     shows = [show for show in shows if show != "category-thumbnails"]
@@ -118,13 +115,13 @@ def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
     paginated_shows = shows[start:end]
 
     for show_folder in paginated_shows:
-        metadata_path = os.path.join(absolute_directory, show_folder, "metadata.json")
+        metadata_path = os.path.join(directory, show_folder, "metadata.json")
         if os.path.isfile(metadata_path):
             with open(metadata_path, "r") as f:
                 metadata = json.load(f)
-                thumbnail_file = find_thumbnail(show_folder, absolute_thumbnails_directory)
+                thumbnail_file = find_thumbnail(show_folder, thumbnails_directory)
                 thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
-                thumbnail_url = thumbnail_relative_path
+                thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
 
                 shows_metadata.append({
                     "title": metadata.get("title"),
