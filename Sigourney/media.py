@@ -36,7 +36,7 @@ def get_episodes(directory, thumbnails_directory, page=1, per_page=16):
     for episode in paginated_episodes:
         thumbnail_file = find_thumbnail(episode, thumbnails_directory)
         thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
-        thumbnail_url = url_for("static", filename=thumbnail_relative_path)
+        thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
 
         episodes_metadata[0]["breakdown"].append({
             "thumbnail": thumbnail_url,

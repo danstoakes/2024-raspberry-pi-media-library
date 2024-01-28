@@ -45,8 +45,8 @@ def tv_show(slug):
 @app.route("/tv-shows/<slug>/<sub_slug>")
 @sigourney.requires_auth
 def tv_show_detail(slug, sub_slug):
-    tv_show_directory = f"static/tv-shows/{slug}/{sub_slug}"
-    thumbnails_directory = f"thumbnails/tv-shows/{slug}"
+    tv_show_directory = os.path.join(current_app.root_path, "static", "tv-shows", slug, sub_slug)
+    thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "tv-shows", slug)
     episodes = sigourney.get_episodes(tv_show_directory, thumbnails_directory, page=1)
 
     return render_template("tv_details_page.html", episodes=episodes[0]["breakdown"], title=episodes[0]["title"])
