@@ -27,8 +27,8 @@ def index():
 @app.route("/films")
 @sigourney.requires_auth
 def films():
-    directory = "static/films"
-    thumbnails_directory = "thumbnails/films"
+    directory = os.path.join(current_app.root_path, "static", "films")
+    thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "films")
     films_metadata = sigourney.get_films(directory, thumbnails_directory, page=1)
 
     return render_template("archive.html", title="Films", videos=films_metadata)
