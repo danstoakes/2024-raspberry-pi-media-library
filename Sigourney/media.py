@@ -39,8 +39,8 @@ def get_episodes(directory, thumbnails_directory, page=1, per_page=16):
         thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
 
         episodes_metadata[0]["breakdown"].append({
-            "thumbnail": thumbnail_url,
-            "video": f"/{os.path.join(directory, episode)}"
+            "thumbnail": f"/static{thumbnail_url.split('static')[1]}",
+            "video": f"/static{os.path.join(directory.split('static')[1], episode)}"
         })
 
     return episodes_metadata
@@ -69,7 +69,7 @@ def get_films(directory, thumbnails_directory, page=1, per_page=10):
                 shows_metadata.append({
                     "title": metadata.get("title"),
                     "thumbnail": thumbnail_url,
-                    "video": os.path.join(directory, metadata.get("src"))
+                    "video": f"/static{os.path.join(directory.split('static')[1], metadata.get('src'))}"
                 })
 
     return shows_metadata
