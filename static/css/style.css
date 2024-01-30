@@ -220,6 +220,13 @@ main {
     position: relative;
 }
 
+.archive-item a > div {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
 .archive-item svg {
     height: 100%;
     position: absolute;
