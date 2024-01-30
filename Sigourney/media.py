@@ -38,12 +38,23 @@ def get_episodes(directory, thumbnails_directory, page=1, per_page=16):
         thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
         thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
 
-        episodes_metadata[0]["breakdown"].append({
-            "thumbnail": f"/static{thumbnail_url.split('static')[1]}",
-            "video": f"/static{os.path.join(directory.split('static')[1], episode)}"
-        })
+        metadata_path = os.path.join(directory, "metadata.json")
+        if os.path.isfile(metadata_path):
+            with open(metadata_path, "r") as f:
+                metadata = json.load(f)
 
-    return episodes_metadata
+        for item in metadata:
+            if item["src"] == episode:
+                episodes_metadata[0]["breakdown"].append({
+                    "thumbnail": f"/static{thumbnail_url.split('static')[1]}",
+                    "video": f"/static{os.path.join(directory.split('static')[1], episode)}",
+                    "title": item.get("title")
+                })
+                break
+
+    episodes_metadata_sorted = sorted(episodes_metadata, key=lambda x: x["title"])
+
+    return episodes_metadata_sorted
 
 def get_films(directory, thumbnails_directory, page=1, per_page=10):
     shows = next(os.walk(directory))[1]
