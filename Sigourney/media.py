@@ -53,9 +53,7 @@ def get_episodes(directory, thumbnails_directory, page=1, per_page=16):
                 })
                 break
 
-    print(episodes_metadata)
-
-    episodes_metadata_sorted = sorted(episodes_metadata, key=lambda x: x["src"])
+    episodes_metadata_sorted = sorted(episodes_metadata[0]["breakdown"], key=lambda x: x["src"])
 
     return episodes_metadata_sorted
 
