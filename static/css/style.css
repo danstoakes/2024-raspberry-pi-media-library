@@ -207,9 +207,10 @@ main {
 }
 
 .archive-item {
-    align-items: center;
+    align-items: flex-start;
     cursor: pointer;
     display: flex;
+    justify-content: center;
 }
 
 .archive-item a {
