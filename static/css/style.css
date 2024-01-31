@@ -228,6 +228,10 @@ main {
     position: relative;
 }
 
+.archive-item a > p {
+	text-align: center;
+}
+
 .archive-item svg {
     height: 100%;
     position: absolute;
