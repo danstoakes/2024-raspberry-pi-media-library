@@ -109,7 +109,7 @@ def get_series(directory, thumbnails_directory, page=1, per_page=32):
 
         series_metadata[0]["breakdown"].append({
             "title": f"Series {series + 1}",
-            "thumbnail": thumbnail_url,
+            "thumbnail": f"/static{thumbnail_url.split('static')[1]}",
             "slug": f"{series_folder.split('static')[1]}"
         })
     
