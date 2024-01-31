@@ -48,11 +48,12 @@ def get_episodes(directory, thumbnails_directory, page=1, per_page=16):
                 episodes_metadata[0]["breakdown"].append({
                     "thumbnail": f"/static{thumbnail_url.split('static')[1]}",
                     "video": f"/static{os.path.join(directory.split('static')[1], episode)}",
-                    "title": item.get("title")
+                    "title": item.get("title"),
+                    "src": item.get("src")
                 })
                 break
 
-    episodes_metadata_sorted = sorted(episodes_metadata, key=lambda x: x["video"])
+    episodes_metadata_sorted = sorted(episodes_metadata, key=lambda x: x["src"])
 
     return episodes_metadata_sorted
 
