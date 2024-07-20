@@ -147,11 +147,22 @@ def is_image_file(filename):
     image_extensions = {'png', 'gif', 'jpg', 'jpeg'}
     return filename.split('.')[-1].lower() in image_extensions
 
+import os
+
 def get_videos(directory, thumbnails_directory, page=1, per_page=32):
+    # Calculate start and end indices for pagination
     start = (page - 1) * per_page
     end = start + per_page
 
-    all_videos = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+    # List all files in the directory
+    all_files = os.listdir(directory)
+    all_videos = [f for f in all_files if os.path.isfile(os.path.join(directory, f))]
+
+    # Calculate total pages
+    total_videos = len(all_videos)
+    total_pages = (total_videos + per_page - 1) // per_page
+
+    # Get the videos for the current page
     videos = all_videos[start:end]
 
     video_thumbnail_pairs = []
@@ -163,8 +174,11 @@ def get_videos(directory, thumbnails_directory, page=1, per_page=32):
             thumbnail_url = os.path.relpath(video_path, start=app.root_path)
         else:
             thumbnail_file = find_thumbnail(video, thumbnails_directory)
-            thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
-            thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
+            if thumbnail_file:
+                thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
+                thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
+            else:
+                thumbnail_url = None  # Handle case where thumbnail is not found
 
         video_thumbnail_pairs.append({
             "video": os.path.relpath(video_path, start=app.root_path),
@@ -172,4 +186,10 @@ def get_videos(directory, thumbnails_directory, page=1, per_page=32):
             "is_image": is_image
         })
 
-    return video_thumbnail_pairs
+    return {
+        "videos": video_thumbnail_pairs,
+        "page": page,
+        "total_pages": total_pages,
+        "has_prev": page > 1,
+        "has_next": page < total_pages
+    }

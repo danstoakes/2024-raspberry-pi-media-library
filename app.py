@@ -74,9 +74,10 @@ def videos():
 def locker():
     media_directory = os.path.join(current_app.root_path, "static", "locker")
     thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "locker")
-    media_thumbnail_pairs = sigourney.get_videos(media_directory, thumbnails_directory, page=1, per_page=400)
+    page = request.args.get("page", 1, type=int)
+    data = sigourney.get_videos(media_directory, thumbnails_directory, page=page)
 
-    return render_template("locker.html", title="Locker", media=media_thumbnail_pairs)
+    return render_template("locker.html", title="Locker", media=["videos"], current_page=data["page"], total_pages=["total_pages"], has_prev=data["has_prev"], has_next=data["has_next"])
 
 @app.route('/static/locker/<path:filename>')
 @sigourney.requires_super
