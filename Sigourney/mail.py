@@ -13,14 +13,17 @@ def send_notification():
     receiver_email = os.getenv("RECIEVER_MAIL_ADDRESS")
     password = os.getenv("SENDER_MAIL_APP_PASSWORD")
 
-    body = f"The Media Server is now running."
+    body = """
+    The Media Server is now running.<br><br>
+    <strong style="color: #3B877B">Sigourney</strong>
+    """
 
     message = MIMEMultipart()
     message["From"] = sender_email
     message["To"] = receiver_email
     message["Subject"] = "Sigourney Media Server Active"
 
-    message.attach(MIMEText(body, "plain"))
+    message.attach(MIMEText(body, "html"))
 
     try:
         server = smtplib.SMTP(os.getenv("MAIL_HOST"), os.getenv("MAIL_PORT"))
