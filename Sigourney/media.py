@@ -176,8 +176,6 @@ def is_image_file(filename):
     image_extensions = {'png', 'gif', 'jpg', 'jpeg'}
     return filename.split('.')[-1].lower() in image_extensions
 
-import os
-
 def get_videos(directory, thumbnails_directory, page=1, per_page=32):
     # Calculate start and end indices for pagination
     start = (page - 1) * per_page
