@@ -63,9 +63,16 @@ def tv_show_detail(slug, sub_slug):
 def tv_shows():
     tv_shows_directory = os.path.join(current_app.root_path, "static", "tv-shows")
     thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "tv-shows")
-    shows_metadata = sigourney.get_tv_shows(tv_shows_directory, thumbnails_directory, page=1)
+    page = request.args.get("page", 1, type=int)
+    data = sigourney.get_tv_shows(tv_shows_directory, thumbnails_directory, page=page)
 
-    return render_template("tv.html", title="TV", shows=shows_metadata)
+    return render_template("tv.html", 
+                           title="TV", 
+                           videos=data["shows"],
+                           current_page=data["page"], 
+                           total_pages=data["total_pages"], 
+                           has_prev=data["has_prev"], 
+                           has_next=data["has_next"])
 
 @app.route("/videos")
 @sigourney.requires_auth
