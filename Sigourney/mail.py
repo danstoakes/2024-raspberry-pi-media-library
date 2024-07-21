@@ -8,15 +8,29 @@ except ImportError as error:
     print(f"Original error: {error}")
     exit(1)
 
+def get_local_ip():
+    try:
+        # Connect to a remote server to determine the local IP address
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Google's public DNS server
+        local_ip = s.getsockname()[0]
+        s.close()
+        return local_ip
+    except Exception as e:
+        return f"Error: {e}"
+
 def send_notification():
     sender_email = os.getenv("SENDER_MAIL_ADDRESS")
     receiver_email = os.getenv("RECIEVER_MAIL_ADDRESS")
     password = os.getenv("SENDER_MAIL_APP_PASSWORD")
 
-    body = """
-    The Media Server is now running.<br><br>
-    <strong style="color: #3B877B">Sigourney</strong>
-    """
+    local_ip = get_local_ip()
+    app_port = os.getenv("APP_PORT")
+
+    body = (
+        "The Media Server is now running. Click <a href='http://" + local_ip  + ":" + app_port  + "'>here</a> to load.<br><br>"
+        "<strong style='color: #3B877B'>Sigourney</strong>"
+    )
 
     message = MIMEMultipart()
     message["From"] = sender_email

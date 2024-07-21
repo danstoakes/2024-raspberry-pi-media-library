@@ -243,3 +243,40 @@ main {
     object-fit: cover;
     width: 100%;
 }
+
+.pagination {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	margin-top: 1.5rem;
+}
+
+.pagination span, .pagination a {
+	align-items: center;
+	background: rgba(22, 22, 23, .8);
+	color: white;
+	display: flex;
+	padding: 0.5rem;
+	text-decoration: none;
+}
+
+@media (max-width: 500px) {
+	.pagination a.number {
+		display: none;
+	}
+}
+
+.pagination a.number {
+	aspect-ratio: 1/1;
+}
+
+.pagination .active {
+	font-weight: bold;
+}
+
+.pagination .active, .pagination a.number {
+	justify-content: center;
+	width: 1rem;
+}
