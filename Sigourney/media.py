@@ -57,34 +57,48 @@ def get_episodes(directory, thumbnails_directory, page=1, per_page=16):
 
     return episodes_metadata_sorted
 
-def get_films(directory, thumbnails_directory, page=1, per_page=10):
-    shows = next(os.walk(directory))[1]
-    shows_metadata = []
-
-    shows = [show for show in shows if show != "category-thumbnails"]
-
-    shows.sort()
-
+def get_films(directory, thumbnails_directory, page=1, per_page=32):
+    # Get list of films excluding 'category-thumbnails'
+    films = [film for film in next(os.walk(directory))[1] if film != "category-thumbnails"]
+    
+    # Sort films alphabetically
+    films.sort()
+    
+    # Calculate start and end indices for pagination
     start = (page - 1) * per_page
     end = start + per_page
-    paginated_shows = shows[start:end]
+    
+    # Get the paginated films
+    paginated_films = films[start:end]
+    
+    films_metadata = []
 
-    for show_folder in paginated_shows:
-        metadata_path = os.path.join(directory, show_folder, "metadata.json")
+    for film_folder in paginated_films:
+        metadata_path = os.path.join(directory, film_folder, "metadata.json")
         if os.path.isfile(metadata_path):
             with open(metadata_path, "r") as f:
                 metadata = json.load(f)
-                thumbnail_file = find_thumbnail(show_folder, thumbnails_directory)
+                thumbnail_file = find_thumbnail(film_folder, thumbnails_directory)
                 thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
                 thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
 
-                shows_metadata.append({
+                films_metadata.append({
                     "title": metadata.get("title"),
                     "thumbnail": thumbnail_url,
                     "video": f"/static{os.path.join(directory.split('static')[1], metadata.get('src'))}"
                 })
+    
+    # Calculate total pages
+    total_films = len(films)
+    total_pages = (total_films + per_page - 1) // per_page
 
-    return shows_metadata
+    return {
+        "films": films_metadata,
+        "page": page,
+        "total_pages": total_pages,
+        "has_prev": page > 1,
+        "has_next": page < total_pages
+    }
 
 def get_series(directory, thumbnails_directory, page=1, per_page=32):
     series_count = 0
@@ -116,15 +130,20 @@ def get_series(directory, thumbnails_directory, page=1, per_page=32):
     return series_metadata
 
 def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
-    shows = next(os.walk(directory))[1]
-    shows_metadata = []
-
-    shows = [show for show in shows if show != "category-thumbnails"]
+    # Get list of shows excluding 'category-thumbnails'
+    shows = [show for show in next(os.walk(directory))[1] if show != "category-thumbnails"]
+    
+    # Sort shows alphabetically
     shows.sort()
-
+    
+    # Calculate start and end indices for pagination
     start = (page - 1) * per_page
     end = start + per_page
+    
+    # Get the paginated shows
     paginated_shows = shows[start:end]
+    
+    shows_metadata = []
 
     for show_folder in paginated_shows:
         metadata_path = os.path.join(directory, show_folder, "metadata.json")
@@ -140,8 +159,18 @@ def get_tv_shows(directory, thumbnails_directory, page=1, per_page=32):
                     "thumbnail": thumbnail_url,
                     "slug": f"/tv-shows/{show_folder}"
                 })
+    
+    # Calculate total pages
+    total_shows = len(shows)
+    total_pages = (total_shows + per_page - 1) // per_page
 
-    return shows_metadata
+    return {
+        "shows": shows_metadata,
+        "page": page,
+        "total_pages": total_pages,
+        "has_prev": page > 1,
+        "has_next": page < total_pages
+    }
 
 def is_image_file(filename):
     image_extensions = {'png', 'gif', 'jpg', 'jpeg'}

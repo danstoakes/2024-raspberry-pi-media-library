@@ -29,6 +29,7 @@ def index():
 def films():
     directory = os.path.join(current_app.root_path, "static", "films")
     thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "films")
+    page = request.args.get("page", 1, type=int)
     films_metadata = sigourney.get_films(directory, thumbnails_directory, page=1)
 
     return render_template("archive.html", title="Films", videos=films_metadata)
@@ -65,9 +66,16 @@ def tv_shows():
 def videos():
     videos_directory = os.path.join(current_app.root_path, "static", "videos")
     thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "videos")
-    video_thumbnail_pairs = sigourney.get_videos(videos_directory, thumbnails_directory, page=1)
+    page = request.args.get("page", 1, type=int)
+    data = sigourney.get_videos(videos_directory, thumbnails_directory, page=page)
 
-    return render_template("archive.html", title="Videos", videos=video_thumbnail_pairs)
+    return render_template("archive.html", 
+                           title="Videos", 
+                           videos=data["videos"],
+                           current_page=data["page"], 
+                           total_pages=data["total_pages"], 
+                           has_prev=data["has_prev"], 
+                           has_next=data["has_next"])
 
 @app.route("/locker")
 @sigourney.requires_super
@@ -77,7 +85,13 @@ def locker():
     page = request.args.get("page", 1, type=int)
     data = sigourney.get_videos(media_directory, thumbnails_directory, page=page)
 
-    return render_template("locker.html", title="Locker", media=data["videos"], current_page=data["page"], total_pages=data["total_pages"], has_prev=data["has_prev"], has_next=data["has_next"])
+    return render_template("locker.html", 
+                           title="Locker", 
+                           media=data["videos"], 
+                           current_page=data["page"], 
+                           total_pages=data["total_pages"], 
+                           has_prev=data["has_prev"], 
+                           has_next=data["has_next"])
 
 @app.route('/static/locker/<path:filename>')
 @sigourney.requires_super
