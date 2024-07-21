@@ -30,9 +30,15 @@ def films():
     directory = os.path.join(current_app.root_path, "static", "films")
     thumbnails_directory = os.path.join(current_app.root_path, "static", "thumbnails", "films")
     page = request.args.get("page", 1, type=int)
-    films_metadata = sigourney.get_films(directory, thumbnails_directory, page=1)
+    data = sigourney.get_films(directory, thumbnails_directory, page=page)
 
-    return render_template("archive.html", title="Films", videos=films_metadata)
+    return render_template("archive.html", 
+                           title="Films", 
+                           videos=data["films"],
+                           current_page=data["page"], 
+                           total_pages=data["total_pages"], 
+                           has_prev=data["has_prev"], 
+                           has_next=data["has_next"])
 
 @app.route("/tv-shows/<slug>")
 @sigourney.requires_auth
