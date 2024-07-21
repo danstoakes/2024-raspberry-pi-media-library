@@ -68,7 +68,7 @@ def tv_shows():
 
     return render_template("tv.html", 
                            title="TV", 
-                           videos=data["shows"],
+                           shows=data["shows"],
                            current_page=data["page"], 
                            total_pages=data["total_pages"], 
                            has_prev=data["has_prev"], 
