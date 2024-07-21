@@ -29,14 +29,14 @@ def send_notification():
     app_port = os.getenv("APP_PORT")
 
     body = (
-        "The Media Server is now running. Click <a href='http://" + local_ip  + ":" + app_port  + "'>here</a> to load.<br><br>"
+        "The Media Server is now running. Click <a href='http://" + local_ip  + ":" + app_port  + "'>here</a> to open.<br><br>"
         "<strong style='color: #3B877B'>Sigourney</strong>"
     )
 
     message = MIMEMultipart()
     message["From"] = sender_email
     message["To"] = receiver_email
-    message["Subject"] = "Sigourney Media Server Active"
+    message["Subject"] = "Media server active"
 
     message.attach(MIMEText(body, "html"))
 
