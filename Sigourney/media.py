@@ -2,10 +2,56 @@ try:
     from flask import current_app as app, url_for
     import json
     import os
+    import subprocess
 except ImportError as error:
     print("Some or all of the necessary packages to run the script are missing. Please consult the README for instructions on how to install them.")
     print(f"Original error: {error}")
     exit(1)
+
+def get_video_duration(video_path):
+    try:
+        result = subprocess.run([
+            'ffprobe',
+            '-v', 'error',
+            '-show_entries', 'format=duration',
+            '-of', 'default=noprint_wrappers=1:nokey=1',
+            video_path
+        ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=True)
+        duration = float(result.stdout.strip())
+        return duration
+    except Exception as e:
+        print(f"Error getting duration for {video_path}: {e}")
+        return None
+
+def generate_video_thumbnail(video_path, thumbnail_path):
+    duration = get_video_duration(video_path)
+    if duration is None:
+        # fallback: use 2 seconds
+        seek_time = "00:00:02"
+    else:
+        # Calculate 10% of duration in seconds
+        ten_percent = duration * 0.10
+        # Convert seconds to hh:mm:ss.xxx format
+        hours = int(ten_percent // 3600)
+        minutes = int((ten_percent % 3600) // 60)
+        seconds = ten_percent % 60
+        seek_time = f"{hours:02d}:{minutes:02d}:{seconds:06.3f}"
+
+    try:
+        os.makedirs(os.path.dirname(thumbnail_path), exist_ok=True)
+        subprocess.run([
+            'ffmpeg',
+            '-ss', seek_time,
+            '-i', video_path,
+            '-frames:v', '1',
+            '-q:v', '2',
+            '-y',  # Overwrite existing file if needed
+            thumbnail_path
+        ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to generate thumbnail for {video_path}: {e}")
+        return False
 
 def find_thumbnail(video, thumbnails_directory):
     extensions = [".png", ".jpg", ".jpeg", ".svg"]
@@ -200,12 +246,18 @@ def get_videos(directory, thumbnails_directory, page=1, per_page=32):
         if is_image:
             thumbnail_url = os.path.relpath(video_path, start=app.root_path)
         else:
-            thumbnail_file = find_thumbnail(video, thumbnails_directory)
-            if thumbnail_file:
-                thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
-                thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
+            thumbnail_file = f"{os.path.splitext(video)[0]}.jpg"
+            thumbnail_path = os.path.join(thumbnails_directory, thumbnail_file)
+
+            if not os.path.exists(thumbnail_path):
+                success = generate_video_thumbnail(video_path, thumbnail_path)
             else:
-                thumbnail_url = None  # Handle case where thumbnail is not found
+                success = True
+
+            if success and os.path.exists(thumbnail_path):
+                thumbnail_url = os.path.relpath(thumbnail_path, start=app.root_path)
+            else:
+                thumbnail_url = None
 
         video_thumbnail_pairs.append({
             "video": os.path.relpath(video_path, start=app.root_path),
@@ -220,3 +272,12 @@ def get_videos(directory, thumbnails_directory, page=1, per_page=32):
         "has_prev": page > 1,
         "has_next": page < total_pages
     }
+
+def generate_thumbnails_for_all(directory, thumbnails_directory):
+    for file in os.listdir(directory):
+        if file.lower().endswith(('.mp4', '.mov', '.avi', '.mkv')):  # extend as needed
+            video_path = os.path.join(directory, file)
+            thumbnail_file = f"{os.path.splitext(file)[0]}.jpg"
+            thumbnail_path = os.path.join(thumbnails_directory, thumbnail_file)
+            if not os.path.exists(thumbnail_path):
+                generate_video_thumbnail(video_path, thumbnail_path)
