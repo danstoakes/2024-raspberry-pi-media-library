@@ -80,9 +80,20 @@ def get_episodes(directory, thumbnails_directory, page=1, per_page=16):
     paginated_episodes = episodes[start:end]
 
     for episode in paginated_episodes:
-        thumbnail_file = find_thumbnail(episode, thumbnails_directory)
-        thumbnail_relative_path = os.path.join(thumbnails_directory, thumbnail_file)
-        thumbnail_url = os.path.relpath(thumbnail_relative_path, start=app.root_path)
+        episode_path = os.path.join(directory, episode)
+
+        thumbnail_file = f"{os.path.splitext(episode)[0]}.jpg"
+        thumbnail_path = os.path.join(thumbnails_directory, thumbnail_file)
+
+        if not os.path.exists(thumbnail_path):
+            success = generate_video_thumbnail(episode_path, thumbnail_path)
+        else:
+            success = True
+
+        if success and os.path.exists(thumbnail_path):
+            thumbnail_url = os.path.relpath(thumbnail_path, start=app.root_path)
+        else:
+            thumbnail_url = None
 
         metadata_path = os.path.join(directory, "metadata.json")
         if os.path.isfile(metadata_path):
